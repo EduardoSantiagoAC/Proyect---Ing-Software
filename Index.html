@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Vinculación de Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="diseñoMenú.css">
+    <title>Rutas a explorar</title>
+
+    <!-- Incluye Leaflet.js y su CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(223, 221, 221); /* Fondo blanco */
+            color: #220f66; /* Verde predominante para los textos */
+        }
+
+        header {
+            background-color: rgb(223, 221, 221); /* Fondo blanco para el header */
+            padding: 15px 0;
+            border-bottom: 2px solid #220f66; /* Línea verde */
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        nav h1 {
+            font-size: 24px;
+            margin: 0;
+            color: #375fce; /* Título verde */
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: #375fce; /* Color verde para los enlaces */
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        nav ul li a:hover {
+            color: #220f66; /* Verde más oscuro al hacer hover */
+            text-decoration: underline;
+        }
+
+        nav ul li a i {
+            margin-right: 5px;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50vh;
+        }
+
+        .search-container input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #375fce; /* Borde verde */
+            border-radius: 5px;
+            background-color: white; /* Fondo blanco */
+            color: #375fce; /* Texto verde */
+        }
+
+        .search-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: white; /* Fondo blanco */
+            color: #375fce; /* Texto verde */
+            border: 2px solid #375fce; /* Borde verde */
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .search-container button:hover {
+            background-color: #375fce; /* Verde de fondo al hacer hover */
+            color: white; /* Texto blanco en hover */
+        }
+
+        /* Estilo para el contenedor del mapa */
+        .map-container {
+            width: 80%; /* Limita el ancho del mapa al 80% de la página */
+            max-width: 900px; /* Ancho máximo del mapa */
+            margin: 0 auto; /* Centra el mapa horizontalmente */
+            padding: 20px; /* Añade un poco de espacio alrededor del mapa */
+            background-color: white; /* Fondo blanco para el contenedor */
+            border-radius: 10px; /* Bordes redondeados */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra ligera para dar profundidad */
+        }
+
+        #map {
+            width: 100%;
+            height: 400px; /* Ajusta la altura del mapa */
+            border-radius: 10px; /* Bordes redondeados del mapa */
+        }
+    </style>
+
+    <script>
+        function refreshPage() {
+            window.location.reload(); // Refresca la página al hacer clic en INICIO
+        }
+
+        // Espera a que el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', function () {
+            // Verifica si el navegador soporta geolocalización
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocalización no es soportada por este navegador.");
+            }
+
+            // Muestra el mapa con la ubicación actual del usuario
+            function showPosition(position) {
+                var lat = position.coords.latitude;
+                var lon = position.coords.longitude;
+
+                // Crear el mapa centrado en la ubicación actual
+                var map = L.map('map').setView([lat, lon], 13);
+
+                // Agregar capa base de OpenStreetMap
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                // Agregar marcador en la ubicación del usuario
+                L.marker([lat, lon]).addTo(map)
+                    .bindPopup("Estás aquí.")
+                    .openPopup();
+            }
+
+            // Manejo de errores de geolocalización
+            function showError(error) {
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        alert("El usuario ha denegado el acceso a la geolocalización.");
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        alert("La ubicación no está disponible.");
+                        break;
+                    case error.TIMEOUT:
+                        alert("La solicitud ha expirado.");
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        alert("Ha ocurrido un error desconocido.");
+                        break;
+                }
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <h1>Rupsedi</h1>
+            <ul>
+                <li><a href="#" onclick="refreshPage()">INICIO</a></li>
+                <li><a href="https://www.openstreetmap.org/search?lat=23.669200&lon=-100.630791#map=18/23.669200/-100.630788">Mapa</a></li>
+                <li><a href="#"><i class="fas fa-route"></i> Publicar ruta</a></li>
+                <li><a href="#"><i class="fa-solid fa-folder"></i> Rutas favoritas</a></li>
+                <li><a href="#"><i class="fas fa-star"></i> Sugerencias del día</a></li>
+                <li><a href="#"><i class="fas fa-map-marker-alt"></i> Zona actual</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenedor para la caja de búsqueda -->
+    <div class="search-container">
+        <input type="text" placeholder="Buscar rutas..." />
+        <button type="button">Buscar</button>
+    </div>
+
+    <!-- Contenedor para el mapa -->
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
+</body>
+
+</html>
